@@ -1,61 +1,39 @@
 <?php
-session_start();
-if(!isset($_POST['cname'])){
-    header("Location: index.php");
+if (isset($_POST['name'])) {
+  header("Location: https://theamanshakya.github.io/capids/");
+  die();
 }
-$servername = "localhost";
-$username = "raahejxp_capids";
-$password = "Incorect@00";
-$dbname = "raahejxp_capids";
-date_default_timezone_set('Asia/Kolkata');
-$time = date("d-m-Y h:m:sa");
-// echo $time ;
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
+echo "Processing";
+$to = "theamanshakya@gmail.com";
+$subject = "Contact Mail";
 
-// Check connection
-if ($conn->connect_error) {
-  die("Connection failed: " . $conn->connect_error);
-}
+$message = "
+<html>
+<head>
+<title>Contact Mail</title>
+</head>
+<body>
+<p>This email contains HTML Tags!</p>
+<table>
+<tr>
+<th>Firstname</th>
+<th>Lastname</th>
+</tr>
+<tr>
+<td>John</td>
+<td>Doe</td>
+</tr>
+</table>
+</body>
+</html>
+";
 
-// prepare and bind
-$stmt = $conn->prepare("INSERT INTO contactus (cname, cemail, cphone, cmsg,clientIP, createdAt) VALUES (?, ?, ?, ?, ?, ?)");
-$stmt->bind_param("ssssss", $cname, $cemail ,$cphone ,$cmsg , $clientIP ,$createdAt);
+// Always set content-type when sending HTML email
+$headers = "MIME-Version: 1.0" . "\r\n";
+$headers .= "Content-type:text/html;charset=UTF-8" . "\r\n";
 
-if (!empty($_SERVER['HTTP_CLIENT_IP']))   
-  {
-    $ip_address = $_SERVER['HTTP_CLIENT_IP'];
-  }
-//whether ip is from proxy
-elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))  
-  {
-    $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
-  }
-//whether ip is from remote address
-else
-  {
-    $ip_address = $_SERVER['REMOTE_ADDR'];
-  }
-// set parameters and execute
-$cname =  htmlspecialchars($_POST['cname']);
-$cemail =  htmlspecialchars($_POST['cemail']);
-$cphone = htmlspecialchars($_POST['cphone']);
-$cmsg = htmlspecialchars($_POST['cmessage']);
-$clientIP = htmlspecialchars($ip_address);
-$createdAt = htmlspecialchars($time);
-echo "Processing......";
-if($stmt->execute()){
-    $_SESSION['msg'] = "Thank you for submitting your query.. We will contact you soon";
-    // header("Location: index.php");
-    echo "<script> window.location.assign('index.php')</script>";
-} else {
-    $_SESSION['msg'] = "Failed to send query call us on given numbers";
-    // header("Location: index.php");
-    echo "<script> window.location.assign('index.php')</script>";
-}
+// More headers
+$headers .= 'From: <webmaster@example.com>' . "\r\n";
 
-
-
-$stmt->close();
-$conn->close();
+mail($to,$subject,$message,$headers);
 ?>

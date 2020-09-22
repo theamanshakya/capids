@@ -304,3 +304,24 @@ $("#services-button").on("click" , function(){
 	$("#technologies-content").removeClass('active').removeClass('bar-button-style');	
 	$("#services-content").addClass('active').addClass('bar-button-style');	
 })
+
+
+$("#contact_form").submit(function (e) {
+	e.preventDefault();
+	var formData = {
+		'name'              : $('input[name=cname]').val(),
+		'email'             : $('input[name=cemail]').val(),
+		'cphone'    : $('input[name=cmessage]').val(),
+		'cphone'    : $('input[name=cmessage]').val()
+	};
+
+	$.ajax({
+		type : 'POST',
+		url : "https://amanshakyaa.000webhostapp.com/contact.php",
+		data : formData,
+		dataType : 'json',
+		encode : true
+	}).done(function (data) {
+		console.log(data);
+	})
+})
